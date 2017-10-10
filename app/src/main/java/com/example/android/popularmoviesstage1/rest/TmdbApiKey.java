@@ -5,5 +5,5 @@ package com.example.android.popularmoviesstage1.rest;
  */
 
 public class TmdbApiKey {
-    public static final String api_key = "checking whether added in gitignore or not v2";
+    public static final String api_key = null;
 }
