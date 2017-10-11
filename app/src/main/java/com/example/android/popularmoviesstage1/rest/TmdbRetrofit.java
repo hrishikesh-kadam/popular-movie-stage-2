@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TmdbRetrofit {
 
     public static final String BASE_URL = "https://api.themoviedb.org/3/";
+    public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getRetrofit() {

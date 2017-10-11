@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="settings_sort_entries">
+        <item>@string/settings_sort_popular_entry</item>
+        <item>@string/settings_sort_top_rated_entry</item>
+    </string-array>
+
+    <string-array name="settings_sort_values">
+        <item>@string/settings_sort_popular_value</item>
+        <item>@string/settings_sort_top_rated_value</item>
+    </string-array>
+
+</resources>

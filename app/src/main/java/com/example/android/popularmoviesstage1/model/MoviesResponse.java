@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1.model.toprated;
+package com.example.android.popularmoviesstage1.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,44 +8,54 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class TopRatedResponse implements Parcelable {
+public class MoviesResponse implements Parcelable {
 
-    public final static Parcelable.Creator<TopRatedResponse> CREATOR = new Creator<TopRatedResponse>() {
+    public final static Parcelable.Creator<MoviesResponse> CREATOR = new Creator<MoviesResponse>() {
 
 
         @SuppressWarnings({
                 "unchecked"
         })
-        public TopRatedResponse createFromParcel(Parcel in) {
-            return new TopRatedResponse(in);
+        public MoviesResponse createFromParcel(Parcel in) {
+            return new MoviesResponse(in);
         }
 
-        public TopRatedResponse[] newArray(int size) {
-            return (new TopRatedResponse[size]);
+        public MoviesResponse[] newArray(int size) {
+            return (new MoviesResponse[size]);
         }
 
     };
     @SerializedName("page")
     @Expose
-    private Integer page;
+    public Integer page;
     @SerializedName("results")
     @Expose
-    private List<Result> results = null;
+    public List<Result> results = null;
     @SerializedName("total_results")
     @Expose
-    private Integer totalResults;
+    public Integer totalResults;
     @SerializedName("total_pages")
     @Expose
-    private Integer totalPages;
+    public Integer totalPages;
 
-    protected TopRatedResponse(Parcel in) {
+    protected MoviesResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.results, (com.example.android.popularmoviesstage1.model.toprated.Result.class.getClassLoader()));
+        in.readList(this.results, (com.example.android.popularmoviesstage1.model.Result.class.getClassLoader()));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
-    public TopRatedResponse() {
+    public MoviesResponse() {
+    }
+
+    @Override
+    public String toString() {
+        return "MoviesResponse{" +
+                "page=" + page +
+                ", results=" + results +
+                ", totalResults=" + totalResults +
+                ", totalPages=" + totalPages +
+                '}';
     }
 
     public Integer getPage() {
@@ -62,16 +72,6 @@ public class TopRatedResponse implements Parcelable {
 
     public Integer getTotalPages() {
         return totalPages;
-    }
-
-    @Override
-    public String toString() {
-        return "TopRatedResponse{" +
-                "page=" + page +
-                ", results=" + results +
-                ", totalResults=" + totalResults +
-                ", totalPages=" + totalPages +
-                '}';
     }
 
     public void writeToParcel(Parcel dest, int flags) {

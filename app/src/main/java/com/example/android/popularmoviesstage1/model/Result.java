@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1.model.popular;
+package com.example.android.popularmoviesstage1.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -25,49 +25,49 @@ public class Result implements Parcelable {
         }
 
     };
-
     @SerializedName("poster_path")
     @Expose
-    public String posterPath;
+    private String posterPath;
     @SerializedName("adult")
     @Expose
-    public Boolean adult;
+    private Boolean adult;
     @SerializedName("overview")
     @Expose
-    public String overview;
+    private String overview;
     @SerializedName("release_date")
     @Expose
-    public String releaseDate;
+    private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    public List<Integer> genreIds = null;
+    private List<Integer> genreIds = null;
     @SerializedName("id")
     @Expose
-    public Integer id;
+    private Integer id;
     @SerializedName("original_title")
     @Expose
-    public String originalTitle;
+    private String originalTitle;
     @SerializedName("original_language")
     @Expose
-    public String originalLanguage;
+    private String originalLanguage;
     @SerializedName("title")
     @Expose
-    public String title;
+    private String title;
     @SerializedName("backdrop_path")
     @Expose
-    public String backdropPath;
+    private String backdropPath;
     @SerializedName("popularity")
     @Expose
-    public Double popularity;
+    private Double popularity;
     @SerializedName("vote_count")
     @Expose
-    public Integer voteCount;
+    private Integer voteCount;
     @SerializedName("video")
     @Expose
-    public Boolean video;
+    private Boolean video;
     @SerializedName("vote_average")
     @Expose
-    public Double voteAverage;
+    private Double voteAverage;
+
     protected Result(Parcel in) {
         this.posterPath = ((String) in.readValue((String.class.getClassLoader())));
         this.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
@@ -86,26 +86,6 @@ public class Result implements Parcelable {
     }
 
     public Result() {
-    }
-
-    @Override
-    public String toString() {
-        return "Result{" +
-                "posterPath='" + posterPath + '\'' +
-                ", adult=" + adult +
-                ", overview='" + overview + '\'' +
-                ", releaseDate='" + releaseDate + '\'' +
-                ", genreIds=" + genreIds +
-                ", id=" + id +
-                ", originalTitle='" + originalTitle + '\'' +
-                ", originalLanguage='" + originalLanguage + '\'' +
-                ", title='" + title + '\'' +
-                ", backdropPath='" + backdropPath + '\'' +
-                ", popularity=" + popularity +
-                ", voteCount=" + voteCount +
-                ", video=" + video +
-                ", voteAverage=" + voteAverage +
-                '}';
     }
 
     public String getPosterPath() {
@@ -162,6 +142,26 @@ public class Result implements Parcelable {
 
     public Double getVoteAverage() {
         return voteAverage;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "posterPath='" + posterPath + '\'' +
+                ", adult=" + adult +
+                ", overview='" + overview + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", genreIds=" + genreIds +
+                ", id=" + id +
+                ", originalTitle='" + originalTitle + '\'' +
+                ", originalLanguage='" + originalLanguage + '\'' +
+                ", title='" + title + '\'' +
+                ", backdropPath='" + backdropPath + '\'' +
+                ", popularity=" + popularity +
+                ", voteCount=" + voteCount +
+                ", video=" + video +
+                ", voteAverage=" + voteAverage +
+                '}';
     }
 
     public void writeToParcel(Parcel dest, int flags) {
