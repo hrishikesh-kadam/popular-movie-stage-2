@@ -15,7 +15,7 @@ import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,12 +30,19 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     private static final int EMPTY_VIEW = 1;
     private static final int NORMAL_VIEW = 2;
     private Context context;
-    private List<Result> results;
+    public ArrayList<Result> results;
+    public String emptyViewMessage;
     private ItemClickListener itemClickListener;
 
-    public GridAdapter(Context context, List<Result> results) {
+    public GridAdapter(Context context, ArrayList<Result> results) {
         this.context = context;
         this.results = results;
+    }
+
+    public GridAdapter(Context context, ArrayList<Result> results, String emptyViewMessage) {
+        this.context = context;
+        this.results = results;
+        this.emptyViewMessage = emptyViewMessage;
     }
 
     @Override
@@ -62,7 +69,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         if (viewType == EMPTY_VIEW) {
 
             EmptyViewHolder emptyViewHolder = (EmptyViewHolder) viewHolder;
-            emptyViewHolder.textView.setText(context.getString(R.string.no_movies_found));
+            emptyViewHolder.textView.setText(emptyViewMessage);
 
         } else if (viewType == NORMAL_VIEW) {
 
@@ -77,23 +84,6 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
             Picasso.with(context).load(imageUri).into(normalViewHolder.imageView);
         }
 
-    }
-
-    private void printLayoutParams(View itemView) {
-
-        FlexboxLayoutManager.LayoutParams flexLayoutParams = (FlexboxLayoutManager.LayoutParams) itemView.getLayoutParams();
-
-        Log.d(LOG_TAG, "-> Width = " + flexLayoutParams.getWidth());
-        Log.d(LOG_TAG, "-> Height = " + flexLayoutParams.getHeight());
-        Log.d(LOG_TAG, "-> AlignSelf = " + flexLayoutParams.getAlignSelf());
-        Log.d(LOG_TAG, "-> FlexBasisPercent = " + flexLayoutParams.getFlexBasisPercent());
-        Log.d(LOG_TAG, "-> FlexGrow = " + flexLayoutParams.getFlexGrow());
-        Log.d(LOG_TAG, "-> FlexShrink = " + flexLayoutParams.getFlexShrink());
-        Log.d(LOG_TAG, "-> Order = " + flexLayoutParams.getOrder());
-        Log.d(LOG_TAG, "-> MinWidth = " + flexLayoutParams.getMinWidth());
-        Log.d(LOG_TAG, "-> MaxWidth = " + flexLayoutParams.getMaxWidth());
-        Log.d(LOG_TAG, "-> MinHeight = " + flexLayoutParams.getMinHeight());
-        Log.d(LOG_TAG, "-> MaxHeight = " + flexLayoutParams.getMaxHeight());
     }
 
     @Override

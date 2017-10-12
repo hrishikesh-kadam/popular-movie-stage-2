@@ -1,9 +1,14 @@
 package com.example.android.popularmoviesstage1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,12 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.popularmoviesstage1.model.MoviesResponse;
+import com.example.android.popularmoviesstage1.model.Result;
 import com.example.android.popularmoviesstage1.rest.TmdbAPIV3;
 import com.example.android.popularmoviesstage1.rest.TmdbApiKey;
 import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,22 +34,36 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements GridAdapter.ItemClickListener,
-        SharedPreferences.OnSharedPreferenceChangeListener, Callback<MoviesResponse> {
+        SharedPreferences.OnSharedPreferenceChangeListener, Callback<MoviesResponse>,
+        SwipeRefreshLayout.OnRefreshListener {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
+    @BindView(R.id.swipeRefresh)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     private TmdbAPIV3 tmdbAPIV3;
     private Call<MoviesResponse> popularResponseCall, topRatedResponseCall;
     private GridAdapter gridAdapter;
+    private AlertDialog alertDialogNetwork;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, "-> onCreate");
 
+        if (!isKeyIsEntered()) {
+            showKeyDialog();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+        initAlertDialogs();
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -50,9 +72,44 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
         tmdbAPIV3 = TmdbRetrofit.getRetrofit().create(TmdbAPIV3.class);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        onSharedPreferenceChanged(sharedPreferences, getString(R.string.settings_sort_key));
+
+        if (savedInstanceState == null) {
+            swipeRefreshLayout.setRefreshing(true);
+            onSharedPreferenceChanged(sharedPreferences, getString(R.string.settings_sort_key));
+        }
+    }
+
+    private void initAlertDialogs() {
+        Log.v(LOG_TAG, "-> initAlertDialogs");
+
+        alertDialogNetwork = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alert_dialog_title_attention))
+                .setMessage(getString(R.string.alert_dialog_message_network))
+                .setPositiveButton(getString(R.string.ok), null)
+                .create();
+    }
+
+    private boolean isKeyIsEntered() {
+        Log.v(LOG_TAG, "-> checkIfKeyIsEntered");
+
+        if (TmdbApiKey.api_key == null || TmdbApiKey.api_key.isEmpty()) {
+            Log.e(LOG_TAG, "-> checkIfKeyIsEntered -> "
+            + String.format(getString(R.string.alert_dialog_message_key), "String api_key", TmdbApiKey.class.getName()));
+            return false;
+        }
+
+        return true;
+    }
+
+    private void showKeyDialog() {
+        AlertDialog alertDialogKeyNotFound = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alert_dialog_title_attention))
+                .setMessage(String.format(getString(R.string.alert_dialog_message_key), "String api_key", TmdbApiKey.class.getName()))
+                .setPositiveButton(getString(R.string.ok), null)
+                .create();
+        alertDialogKeyNotFound.show();
     }
 
     @Override
@@ -89,11 +146,32 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
             if (sortPreference.equals(getString(R.string.settings_sort_popular_value))) {
                 popularResponseCall = tmdbAPIV3.getPopularMovies(TmdbApiKey.api_key);
-                popularResponseCall.enqueue(this);
+                checkNetwork(popularResponseCall);
             } else if (sortPreference.equals(getString(R.string.settings_sort_top_rated_value))) {
                 topRatedResponseCall = tmdbAPIV3.getTopRatedMovies(TmdbApiKey.api_key);
-                topRatedResponseCall.enqueue(this);
+                checkNetwork(topRatedResponseCall);
             }
+        }
+    }
+
+    private void checkNetwork(Call<MoviesResponse> call) {
+        Log.v(LOG_TAG, "-> checkNetwork");
+
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.v(LOG_TAG, "-> checkNetwork -> is connected");
+            call.enqueue(this);
+        } else {
+            Log.w(LOG_TAG, "-> checkNetwork -> not connected");
+
+            gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.please_try_again));
+            recyclerView.setAdapter(gridAdapter);
+            swipeRefreshLayout.setRefreshing(false);
+            alertDialogNetwork.show();
         }
     }
 
@@ -101,22 +179,75 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     public void onResponse(Call<MoviesResponse> call, Response<MoviesResponse> response) {
 
         if (response.isSuccessful()) {
-            Log.v(LOG_TAG, "-> onResponse -> " + response.code() + "\n" + response.body());
+            Log.v(LOG_TAG, "-> onResponse -> " + response.code());
 
-            gridAdapter = new GridAdapter(this, response.body().getResults());
+            if (response.body().getResults().size() == 0)
+                gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.no_movies_found));
+            else
+                gridAdapter = new GridAdapter(this, response.body().getResults());
+
             gridAdapter.setClickListener(this);
             recyclerView.setAdapter(gridAdapter);
 
         } else {
             Log.e(LOG_TAG, "-> onResponse -> " + response.code() );
-            recyclerView.setAdapter(null);
+
+            gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.please_try_again));
+            recyclerView.setAdapter(gridAdapter);
         }
 
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onFailure(Call<MoviesResponse> call, Throwable t) {
         Log.e(LOG_TAG, "-> onFailure -> " + t);
-        recyclerView.setAdapter(null);
+
+        gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.please_try_again));
+        recyclerView.setAdapter(gridAdapter);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.v(LOG_TAG, "-> onRefresh");
+
+        onSharedPreferenceChanged(sharedPreferences, getString(R.string.settings_sort_key));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.v(LOG_TAG, "-> onSaveInstanceState");
+
+        outState.putParcelableArrayList("lastFetchedResults", gridAdapter.results);
+        outState.putString("emptyViewMessage", gridAdapter.emptyViewMessage);
+        outState.putBoolean("isAlertDialogNetworkShowing", alertDialogNetwork.isShowing());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.v(LOG_TAG, "-> onRestoreInstanceState");
+
+        ArrayList<Result> results = savedInstanceState.getParcelableArrayList("lastFetchedResults");
+        String emptyViewMessage = savedInstanceState.getString("emptyViewMessage");
+
+        gridAdapter = new GridAdapter(this, results, emptyViewMessage);
+        gridAdapter.setClickListener(this);
+        recyclerView.setAdapter(gridAdapter);
+
+        if (savedInstanceState.getBoolean("isAlertDialogNetworkShowing"))
+            alertDialogNetwork.show();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.v(LOG_TAG, "-> onDestroy");
+
+        if (alertDialogNetwork.isShowing())
+            alertDialogNetwork.cancel();
     }
 }

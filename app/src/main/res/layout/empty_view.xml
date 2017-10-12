@@ -5,7 +5,9 @@
     android:orientation="vertical">
 
     <TextView
+        android:gravity="center"
         android:id="@+id/textView"
+        android:text="@string/please_try_again"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
