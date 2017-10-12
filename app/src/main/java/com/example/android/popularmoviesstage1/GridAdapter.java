@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.android.popularmoviesstage1.model.Result;
 import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -72,13 +73,32 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
                     .appendEncodedPath(results.get(position).getPosterPath())
                     .build();
             Log.i(LOG_TAG, "-> " + imageUri.toString());
+
             Picasso.with(context).load(imageUri).into(normalViewHolder.imageView);
         }
 
     }
 
+    private void printLayoutParams(View itemView) {
+
+        FlexboxLayoutManager.LayoutParams flexLayoutParams = (FlexboxLayoutManager.LayoutParams) itemView.getLayoutParams();
+
+        Log.d(LOG_TAG, "-> Width = " + flexLayoutParams.getWidth());
+        Log.d(LOG_TAG, "-> Height = " + flexLayoutParams.getHeight());
+        Log.d(LOG_TAG, "-> AlignSelf = " + flexLayoutParams.getAlignSelf());
+        Log.d(LOG_TAG, "-> FlexBasisPercent = " + flexLayoutParams.getFlexBasisPercent());
+        Log.d(LOG_TAG, "-> FlexGrow = " + flexLayoutParams.getFlexGrow());
+        Log.d(LOG_TAG, "-> FlexShrink = " + flexLayoutParams.getFlexShrink());
+        Log.d(LOG_TAG, "-> Order = " + flexLayoutParams.getOrder());
+        Log.d(LOG_TAG, "-> MinWidth = " + flexLayoutParams.getMinWidth());
+        Log.d(LOG_TAG, "-> MaxWidth = " + flexLayoutParams.getMaxWidth());
+        Log.d(LOG_TAG, "-> MinHeight = " + flexLayoutParams.getMinHeight());
+        Log.d(LOG_TAG, "-> MaxHeight = " + flexLayoutParams.getMaxHeight());
+    }
+
     @Override
     public int getItemViewType(int position) {
+
         if (results.size() == 0)
             return EMPTY_VIEW;
         else
@@ -87,13 +107,14 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
+
         if (results.size() == 0)
             return 1;
         else
             return results.size();
     }
 
-    void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 
@@ -116,6 +137,13 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         public NormalViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            imageView.setOnClickListener(this);
+
+            FlexboxLayoutManager.LayoutParams layoutParams =
+                    (FlexboxLayoutManager.LayoutParams) imageView.getLayoutParams();
+
+            layoutParams.setWidth(MainApplication.imageViewPosterWidth);
+            layoutParams.setHeight(MainApplication.imageViewPosterHeight);
         }
 
         @Override

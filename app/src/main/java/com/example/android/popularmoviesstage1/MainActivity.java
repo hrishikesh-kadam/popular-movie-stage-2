@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     RecyclerView recyclerView;
     private TmdbAPIV3 tmdbAPIV3;
     private Call<MoviesResponse> popularResponseCall, topRatedResponseCall;
+    private GridAdapter gridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         recyclerView.setLayoutManager(layoutManager);
 
         tmdbAPIV3 = TmdbRetrofit.getRetrofit().create(TmdbAPIV3.class);
-        popularResponseCall = tmdbAPIV3.getPopularMovies(TmdbApiKey.api_key);
-        topRatedResponseCall = tmdbAPIV3.getTopRatedMovies(TmdbApiKey.api_key);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     }
 
     @Override
-    public void onItemClick(View view, int position) {
+    public void onItemClick(View imageView, int position) {
         Log.v(LOG_TAG, "-> onItemClick");
     }
 
@@ -89,8 +88,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
             Log.v(LOG_TAG, "-> onSharedPreferenceChanged -> " + sortPreference);
 
             if (sortPreference.equals(getString(R.string.settings_sort_popular_value))) {
+                popularResponseCall = tmdbAPIV3.getPopularMovies(TmdbApiKey.api_key);
                 popularResponseCall.enqueue(this);
             } else if (sortPreference.equals(getString(R.string.settings_sort_top_rated_value))) {
+                topRatedResponseCall = tmdbAPIV3.getTopRatedMovies(TmdbApiKey.api_key);
                 topRatedResponseCall.enqueue(this);
             }
         }
@@ -102,7 +103,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         if (response.isSuccessful()) {
             Log.v(LOG_TAG, "-> onResponse -> " + response.code() + "\n" + response.body());
 
-            recyclerView.setAdapter(new GridAdapter(this, response.body().getResults()));
+            gridAdapter = new GridAdapter(this, response.body().getResults());
+            gridAdapter.setClickListener(this);
+            recyclerView.setAdapter(gridAdapter);
+
         } else {
             Log.e(LOG_TAG, "-> onResponse -> " + response.code() );
             recyclerView.setAdapter(null);
