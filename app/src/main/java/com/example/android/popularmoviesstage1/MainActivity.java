@@ -45,16 +45,20 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     private TmdbAPIV3 tmdbAPIV3;
     private Call<MoviesResponse> popularResponseCall, topRatedResponseCall;
     private GridAdapter gridAdapter;
-    private AlertDialog alertDialogNetwork;
+    private AlertDialog alertDialogNetwork, alertDialogKeyNotFound;
     private SharedPreferences sharedPreferences;
+    private boolean isKeyEntered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, "-> onCreate");
 
-        if (!isKeyIsEntered()) {
-            showKeyDialog();
+        initAlertDialogs();
+
+        isKeyEntered = checkKeyEntered();
+        if (!isKeyEntered) {
+            alertDialogKeyNotFound.show();
             return;
         }
 
@@ -62,8 +66,6 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         ButterKnife.bind(this);
 
         swipeRefreshLayout.setOnRefreshListener(this);
-
-        initAlertDialogs();
 
         FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(this);
         layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -84,6 +86,12 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     private void initAlertDialogs() {
         Log.v(LOG_TAG, "-> initAlertDialogs");
 
+        alertDialogKeyNotFound = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.alert_dialog_title_attention))
+                .setMessage(String.format(getString(R.string.alert_dialog_message_key), "String api_key", TmdbApiKey.class.getName()))
+                .setPositiveButton(getString(R.string.ok), null)
+                .create();
+
         alertDialogNetwork = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.alert_dialog_title_attention))
                 .setMessage(getString(R.string.alert_dialog_message_network))
@@ -91,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                 .create();
     }
 
-    private boolean isKeyIsEntered() {
+    private boolean checkKeyEntered() {
         Log.v(LOG_TAG, "-> checkIfKeyIsEntered");
 
         if (TmdbApiKey.api_key == null || TmdbApiKey.api_key.isEmpty()) {
@@ -101,15 +109,6 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         }
 
         return true;
-    }
-
-    private void showKeyDialog() {
-        AlertDialog alertDialogKeyNotFound = new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.alert_dialog_title_attention))
-                .setMessage(String.format(getString(R.string.alert_dialog_message_key), "String api_key", TmdbApiKey.class.getName()))
-                .setPositiveButton(getString(R.string.ok), null)
-                .create();
-        alertDialogKeyNotFound.show();
     }
 
     @Override
@@ -220,6 +219,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         super.onSaveInstanceState(outState);
         Log.v(LOG_TAG, "-> onSaveInstanceState");
 
+        outState.putBoolean("isKeyEntered", isKeyEntered);
+        if (!isKeyEntered)
+            return;
+
         outState.putParcelableArrayList("lastFetchedResults", gridAdapter.results);
         outState.putString("emptyViewMessage", gridAdapter.emptyViewMessage);
         outState.putBoolean("isAlertDialogNetworkShowing", alertDialogNetwork.isShowing());
@@ -229,6 +232,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Log.v(LOG_TAG, "-> onRestoreInstanceState");
+
+        isKeyEntered = savedInstanceState.getBoolean("isKeyEntered");
+        if (!isKeyEntered)
+            return;
 
         ArrayList<Result> results = savedInstanceState.getParcelableArrayList("lastFetchedResults");
         String emptyViewMessage = savedInstanceState.getString("emptyViewMessage");
@@ -246,6 +253,9 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     protected void onDestroy() {
         super.onDestroy();
         Log.v(LOG_TAG, "-> onDestroy");
+
+        if(alertDialogKeyNotFound.isShowing())
+            alertDialogKeyNotFound.cancel();
 
         if (alertDialogNetwork.isShowing())
             alertDialogNetwork.cancel();
