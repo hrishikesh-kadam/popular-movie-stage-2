@@ -20,8 +20,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.v(LOG_TAG, " -> onCreate");
 
-        setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_settings);
     }
 
     public static class MoviePreferenceFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {

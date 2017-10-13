@@ -30,7 +30,7 @@ public class MoviesResponse implements Parcelable {
     public Integer page;
     @SerializedName("results")
     @Expose
-    public ArrayList<Result> results = null;
+    public ArrayList<Result> results = new ArrayList<>();
     @SerializedName("total_results")
     @Expose
     public Integer totalResults;

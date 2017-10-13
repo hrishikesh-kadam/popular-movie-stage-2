@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstage1.model.Result;
-import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.squareup.picasso.Picasso;
 
@@ -74,13 +73,8 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         } else if (viewType == NORMAL_VIEW) {
 
             NormalViewHolder normalViewHolder = (NormalViewHolder) viewHolder;
-            Uri imageUri = Uri.parse(TmdbRetrofit.IMAGE_BASE_URL)
-                    .buildUpon()
-                    .appendPath("w185")
-                    .appendEncodedPath(results.get(position).getPosterPath())
-                    .build();
+            Uri imageUri = results.get(position).getFullPosterPath();
             Log.i(LOG_TAG, "-> " + imageUri.toString());
-
             Picasso.with(context).load(imageUri).into(normalViewHolder.imageView);
         }
 

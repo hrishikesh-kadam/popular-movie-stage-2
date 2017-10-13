@@ -1,12 +1,14 @@
 package com.example.android.popularmoviesstage1.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Result implements Parcelable {
 
@@ -39,7 +41,7 @@ public class Result implements Parcelable {
     private String releaseDate;
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds = null;
+    private ArrayList<Integer> genreIds = new ArrayList<>();
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -88,6 +90,14 @@ public class Result implements Parcelable {
     public Result() {
     }
 
+    public Uri getFullPosterPath() {
+        return Uri.parse(TmdbRetrofit.IMAGE_BASE_URL)
+                .buildUpon()
+                .appendPath("w185")
+                .appendEncodedPath(getPosterPath())
+                .build();
+    }
+
     public String getPosterPath() {
         return posterPath;
     }
@@ -104,7 +114,7 @@ public class Result implements Parcelable {
         return releaseDate;
     }
 
-    public List<Integer> getGenreIds() {
+    public ArrayList<Integer> getGenreIds() {
         return genreIds;
     }
 

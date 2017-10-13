@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     private AlertDialog alertDialogNetwork, alertDialogKeyNotFound;
     private SharedPreferences sharedPreferences;
     private boolean isKeyEntered;
+    private ArrayList<Result> results;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +114,11 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
     @Override
     public void onItemClick(View imageView, int position) {
-        Log.v(LOG_TAG, "-> onItemClick");
+        Log.v(LOG_TAG, "-> onItemClick -> " + results.get(position).getOriginalTitle());
+
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("movieDetails", results.get(position));
+        startActivity(intent);
     }
 
     @Override
@@ -182,8 +187,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
             if (response.body().getResults().size() == 0)
                 gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.no_movies_found));
-            else
-                gridAdapter = new GridAdapter(this, response.body().getResults());
+            else {
+                results = response.body().getResults();
+                gridAdapter = new GridAdapter(this, results);
+            }
 
             gridAdapter.setClickListener(this);
             recyclerView.setAdapter(gridAdapter);
@@ -237,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         if (!isKeyEntered)
             return;
 
-        ArrayList<Result> results = savedInstanceState.getParcelableArrayList("lastFetchedResults");
+        results = savedInstanceState.getParcelableArrayList("lastFetchedResults");
         String emptyViewMessage = savedInstanceState.getString("emptyViewMessage");
 
         gridAdapter = new GridAdapter(this, results, emptyViewMessage);
