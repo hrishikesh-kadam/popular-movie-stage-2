@@ -1,6 +1,6 @@
-package com.example.android.popularmoviesstage1.rest;
+package com.example.android.popularmoviesstage2.rest;
 
-import com.example.android.popularmoviesstage1.model.MoviesResponse;
+import com.example.android.popularmoviesstage2.model.MoviesResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

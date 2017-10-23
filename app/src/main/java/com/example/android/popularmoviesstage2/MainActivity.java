@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage2;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.android.popularmoviesstage1.model.MoviesResponse;
-import com.example.android.popularmoviesstage1.model.Result;
-import com.example.android.popularmoviesstage1.rest.TmdbAPIV3;
-import com.example.android.popularmoviesstage1.rest.TmdbApiKey;
-import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
+import com.example.android.popularmoviesstage2.model.MoviesResponse;
+import com.example.android.popularmoviesstage2.model.Result;
+import com.example.android.popularmoviesstage2.rest.TmdbAPIV3;
+import com.example.android.popularmoviesstage2.rest.TmdbApiKey;
+import com.example.android.popularmoviesstage2.rest.TmdbRetrofit;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;

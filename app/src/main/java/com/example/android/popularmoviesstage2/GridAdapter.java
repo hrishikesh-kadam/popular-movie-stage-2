@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage2;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.popularmoviesstage1.model.Result;
+import com.example.android.popularmoviesstage2.model.Result;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.squareup.picasso.Picasso;
 

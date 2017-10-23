@@ -1,6 +1,6 @@
-package com.example.android.popularmoviesstage1.rest;
+package com.example.android.popularmoviesstage2.rest;
 
-import com.example.android.popularmoviesstage1.BuildConfig;
+import com.example.android.popularmoviesstage2.BuildConfig;
 
 /**
  * Created by Hrishikesh Kadam on 11/10/2017

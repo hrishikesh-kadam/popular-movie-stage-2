@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Popular Movies Stage 1</string>
+    <string name="app_name">Popular Movies Stage 2</string>
 
     <string name="no_movies_found">No Movies Found</string>
     <string name="please_try_again">Something went wrong\nPlease try again\nPull to refresh</string>

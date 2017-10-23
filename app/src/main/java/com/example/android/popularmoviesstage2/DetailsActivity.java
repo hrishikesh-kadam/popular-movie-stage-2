@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage2;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.android.popularmoviesstage1.model.Result;
+import com.example.android.popularmoviesstage2.model.Result;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;

@@ -1,10 +1,10 @@
-package com.example.android.popularmoviesstage1.model;
+package com.example.android.popularmoviesstage2.model;
 
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.android.popularmoviesstage1.rest.TmdbRetrofit;
+import com.example.android.popularmoviesstage2.rest.TmdbRetrofit;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

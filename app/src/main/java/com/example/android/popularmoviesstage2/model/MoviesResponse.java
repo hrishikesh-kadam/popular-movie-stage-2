@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesstage1.model;
+package com.example.android.popularmoviesstage2.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -40,7 +40,7 @@ public class MoviesResponse implements Parcelable {
 
     protected MoviesResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.results, (com.example.android.popularmoviesstage1.model.Result.class.getClassLoader()));
+        in.readList(this.results, (com.example.android.popularmoviesstage2.model.Result.class.getClassLoader()));
         this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }

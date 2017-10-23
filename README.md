@@ -1,5 +1,5 @@
-# popular-movie-stage-1
-Android Developer Nanodegree - 1st Project - Popular Movie Stage 1
+# popular-movie-stage-2
+Android Developer Nanodegree - 2nd Project - Popular Movie Stage 2
 
 Copy paste your api key in key called tmdbApiKey from keystore.properties
 
