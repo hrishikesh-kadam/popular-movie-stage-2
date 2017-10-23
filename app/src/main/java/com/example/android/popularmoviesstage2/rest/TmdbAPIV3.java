@@ -1,9 +1,13 @@
 package com.example.android.popularmoviesstage2.rest;
 
+import com.example.android.popularmoviesstage2.model.details.MovieDetailsResponse;
 import com.example.android.popularmoviesstage2.model.MoviesResponse;
+import com.example.android.popularmoviesstage2.model.reviews.ReviewsResponse;
+import com.example.android.popularmoviesstage2.model.video.VideosResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -17,4 +21,13 @@ public interface TmdbAPIV3 {
 
     @GET("movie/top_rated")
     Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}")
+    Call<MovieDetailsResponse> getMovieDetails(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/videos")
+    Call<VideosResponse> getMovieVideos(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/reviews")
+    Call<ReviewsResponse> getMovieResponse(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
 }
