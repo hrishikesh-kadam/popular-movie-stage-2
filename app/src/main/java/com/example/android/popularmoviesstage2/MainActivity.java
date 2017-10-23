@@ -266,5 +266,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
         if (alertDialogNetwork.isShowing())
             alertDialogNetwork.cancel();
+
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }

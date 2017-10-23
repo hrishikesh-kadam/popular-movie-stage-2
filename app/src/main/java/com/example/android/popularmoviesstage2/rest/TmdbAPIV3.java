@@ -29,5 +29,5 @@ public interface TmdbAPIV3 {
     Call<VideosResponse> getMovieVideos(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}/reviews")
-    Call<ReviewsResponse> getMovieResponse(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
+    Call<ReviewsResponse> getMovieReviews(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
 }
