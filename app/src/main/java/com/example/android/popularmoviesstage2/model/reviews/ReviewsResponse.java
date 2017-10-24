@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ReviewsResponse implements Parcelable {
 
@@ -34,7 +33,7 @@ public class ReviewsResponse implements Parcelable {
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<ReviewsResult> reviewsResults = new ArrayList<>();
+    private ArrayList<ReviewsResult> reviewsResults = new ArrayList<>();
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
@@ -69,11 +68,11 @@ public class ReviewsResponse implements Parcelable {
         this.page = page;
     }
 
-    public List<ReviewsResult> getReviewsResults() {
+    public ArrayList<ReviewsResult> getReviewsResults() {
         return reviewsResults;
     }
 
-    public void setReviewsResults(List<ReviewsResult> reviewsResults) {
+    public void setReviewsResults(ArrayList<ReviewsResult> reviewsResults) {
         this.reviewsResults = reviewsResults;
     }
 

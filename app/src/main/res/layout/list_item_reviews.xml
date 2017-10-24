@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    tools:paddingLeft="16dp"
+    tools:paddingRight="16dp">
+
+    <TextView
+        android:id="@+id/textViewReviewAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Andres Gomez" />
+
+    <TextView
+        android:id="@+id/textViewReviewContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@+id/textViewReviewAuthor"
+        app:layout_constraintTop_toBottomOf="@+id/textViewReviewAuthor"
+        tools:text="The minions are a nice idea and the animation and London recreation is really good, but that's about it.\n\nThe script is boring and the jokes not really funny." />
+
+</android.support.constraint.ConstraintLayout>

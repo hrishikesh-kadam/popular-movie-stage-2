@@ -1,5 +1,8 @@
 package com.example.android.popularmoviesstage2;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -32,11 +35,12 @@ import butterknife.ButterKnife;
 import retrofit2.Response;
 
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks,
-                TrailersAdapter.ItemClickListener {
+        TrailersAdapter.ItemClickListener {
 
     public static final String LOG_TAG = DetailsActivity.class.getSimpleName();
     public static final int VIDEOS_CALL = 101;
     public static final int REVIEWS_CALL = 102;
+
     @BindView(R.id.textViewTitle)
     TextView textViewTitle;
     @BindView(R.id.imageViewPoster)
@@ -49,11 +53,15 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     TextView textViewOverview;
     @BindView(R.id.recyclerViewTrailer)
     RecyclerView recyclerViewTrailer;
+    @BindView(R.id.recyclerViewReviews)
+    RecyclerView recyclerViewReviews;
+
     private Result movieDetails;
     private TmdbAPIV3 tmdbAPIV3;
     private VideosResponse videosResponse;
     private ReviewsResponse reviewsResponse;
     private TrailersAdapter trailersAdapter;
+    private ReviewsAdapter reviewsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +77,6 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         layoutParams.height = MainApplication.imageViewPosterHeight;
 
         bindData();
-        initLists();
 
         tmdbAPIV3 = TmdbRetrofit.getRetrofit().create(TmdbAPIV3.class);
 
@@ -77,22 +84,22 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         getMovieReviews();
     }
 
-    private void initLists() {
-        Log.v(LOG_TAG, "-> initLists");
+    private void getMovieVideos() {
+        Log.v(LOG_TAG, "-> getMovieVideos");
 
         recyclerViewTrailer.setLayoutManager(new LinearLayoutManager(this));
         trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.LOADING_VIEW);
         recyclerViewTrailer.setAdapter(trailersAdapter);
-    }
-
-    private void getMovieVideos() {
-        Log.v(LOG_TAG, "-> getMovieVideos");
 
         getSupportLoaderManager().initLoader(VIDEOS_CALL, null, this);
     }
 
     private void getMovieReviews() {
         Log.v(LOG_TAG, "-> getMovieReviews");
+
+        recyclerViewReviews.setLayoutManager(new LinearLayoutManager(this));
+        reviewsAdapter = new ReviewsAdapter(this, null, ReviewsAdapter.LOADING_VIEW);
+        recyclerViewReviews.setAdapter(reviewsAdapter);
 
         getSupportLoaderManager().initLoader(REVIEWS_CALL, null, this);
     }
@@ -155,7 +162,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             case VIDEOS_CALL:
 
                 if (data == null || !(((Response<VideosResponse>) data).isSuccessful())) {
+
                     Log.e(LOG_TAG, "-> onLoadFinished -> onFailure for VIDEOS_CALL");
+                    trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.EMPTY_VIEW);
+                    recyclerViewTrailer.setAdapter(trailersAdapter);
+
                 } else {
                     @SuppressWarnings("unchecked")
                     Response<VideosResponse> response = (Response<VideosResponse>) data;
@@ -175,12 +186,23 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
             case REVIEWS_CALL:
 
                 if (data == null || !(((Response<ReviewsResponse>) data).isSuccessful())) {
+
                     Log.e(LOG_TAG, "-> onLoadFinished -> onFailure for REVIEWS_CALL");
+                    reviewsAdapter = new ReviewsAdapter(this, null, ReviewsAdapter.EMPTY_VIEW);
+                    recyclerViewReviews.setAdapter(reviewsAdapter);
+
                 } else {
                     @SuppressWarnings("unchecked")
                     Response<ReviewsResponse> response = (Response<ReviewsResponse>) data;
                     Log.v(LOG_TAG, "-> onLoadFinished -> Response<ReviewsResponse> -> " + response.code());
                     reviewsResponse = response.body();
+
+                    reviewsAdapter = new ReviewsAdapter(
+                            this,
+                            reviewsResponse.getReviewsResults(),
+                            ReviewsAdapter.NORMAL_VIEW);
+
+                    recyclerViewReviews.setAdapter(reviewsAdapter);
                 }
                 break;
 
@@ -198,5 +220,17 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public void onItemClickTrailer(View itemView, int position) {
         VideosResult videosResult = videosResponse.getVideosResults().get(position);
         Log.v(LOG_TAG, "-> onItemClickTrailer -> trailer -> " + videosResult.getName());
+        watchYoutubeVideo(videosResult.getKey());
+    }
+
+    public void watchYoutubeVideo(String id) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.youtube.com/watch?v=" + id));
+        try {
+            startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            startActivity(webIntent);
+        }
     }
 }
