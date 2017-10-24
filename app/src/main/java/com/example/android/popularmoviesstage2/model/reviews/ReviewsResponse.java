@@ -32,9 +32,9 @@ public class ReviewsResponse implements Parcelable {
     @SerializedName("page")
     @Expose
     private Integer page;
-    @SerializedName("reviewsResults")
+    @SerializedName("results")
     @Expose
-    private List<ReviewsResult> reviewsResults = new ArrayList<ReviewsResult>();
+    private List<ReviewsResult> reviewsResults = new ArrayList<>();
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;

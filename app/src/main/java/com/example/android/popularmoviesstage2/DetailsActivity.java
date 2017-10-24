@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.example.android.popularmoviesstage2.model.Result;
 import com.example.android.popularmoviesstage2.model.reviews.ReviewsResponse;
 import com.example.android.popularmoviesstage2.model.video.VideosResponse;
+import com.example.android.popularmoviesstage2.model.video.VideosResult;
 import com.example.android.popularmoviesstage2.rest.TmdbAPIV3;
 import com.example.android.popularmoviesstage2.rest.TmdbRetrofit;
 import com.squareup.picasso.Picasso;
@@ -25,13 +29,13 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
 import retrofit2.Response;
 
-public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks {
+public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks,
+                TrailersAdapter.ItemClickListener {
 
     public static final String LOG_TAG = DetailsActivity.class.getSimpleName();
-    public static final int VIDEO_CALL = 101;
+    public static final int VIDEOS_CALL = 101;
     public static final int REVIEWS_CALL = 102;
     @BindView(R.id.textViewTitle)
     TextView textViewTitle;
@@ -43,10 +47,13 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     TextView textViewReleaseDate;
     @BindView(R.id.textViewOverview)
     TextView textViewOverview;
+    @BindView(R.id.recyclerViewTrailer)
+    RecyclerView recyclerViewTrailer;
     private Result movieDetails;
     private TmdbAPIV3 tmdbAPIV3;
-    private Call<VideosResponse> videosResponseCall;
-    private Call<ReviewsResponse> reviewsResponseCall;
+    private VideosResponse videosResponse;
+    private ReviewsResponse reviewsResponse;
+    private TrailersAdapter trailersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         layoutParams.height = MainApplication.imageViewPosterHeight;
 
         bindData();
+        initLists();
 
         tmdbAPIV3 = TmdbRetrofit.getRetrofit().create(TmdbAPIV3.class);
 
@@ -69,10 +77,18 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         getMovieReviews();
     }
 
+    private void initLists() {
+        Log.v(LOG_TAG, "-> initLists");
+
+        recyclerViewTrailer.setLayoutManager(new LinearLayoutManager(this));
+        trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.LOADING_VIEW);
+        recyclerViewTrailer.setAdapter(trailersAdapter);
+    }
+
     private void getMovieVideos() {
         Log.v(LOG_TAG, "-> getMovieVideos");
 
-        getSupportLoaderManager().initLoader(VIDEO_CALL, null, this);
+        getSupportLoaderManager().initLoader(VIDEOS_CALL, null, this);
     }
 
     private void getMovieReviews() {
@@ -115,10 +131,15 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     public Loader onCreateLoader(int id, Bundle args) {
 
         switch (id) {
-            case VIDEO_CALL:
-                return new DetailsActivityAsyncTaskLoader(this, tmdbAPIV3, VIDEO_CALL, movieDetails.getId());
+
+            case VIDEOS_CALL:
+                Log.v(LOG_TAG, "-> onCreateLoader -> VIDEOS_CALL");
+                return new DetailsActivityAsyncTaskLoader(this, tmdbAPIV3, VIDEOS_CALL, movieDetails.getId());
+
             case REVIEWS_CALL:
+                Log.v(LOG_TAG, "-> onCreateLoader -> REVIEWS_CALL");
                 return new DetailsActivityAsyncTaskLoader(this, tmdbAPIV3, REVIEWS_CALL, movieDetails.getId());
+
             default:
                 Log.e(LOG_TAG, "-> unhandled onCreateLoader for id = " + id);
                 return null;
@@ -131,25 +152,35 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         int id = loader.getId();
 
         switch (id) {
-            case VIDEO_CALL:
+            case VIDEOS_CALL:
 
-                if (data == null) {
-                    Log.e(LOG_TAG, "-> onLoadFinished -> onFailure for VIDEO_CALL");
+                if (data == null || !(((Response<VideosResponse>) data).isSuccessful())) {
+                    Log.e(LOG_TAG, "-> onLoadFinished -> onFailure for VIDEOS_CALL");
                 } else {
                     @SuppressWarnings("unchecked")
                     Response<VideosResponse> response = (Response<VideosResponse>) data;
                     Log.v(LOG_TAG, "-> onLoadFinished -> Response<VideosResponse> -> " + response.code());
+                    videosResponse = response.body();
+
+                    trailersAdapter = new TrailersAdapter(
+                            this,
+                            videosResponse.getVideosResults(),
+                            TrailersAdapter.NORMAL_VIEW);
+
+                    trailersAdapter.setClickListener(this);
+                    recyclerViewTrailer.setAdapter(trailersAdapter);
                 }
                 break;
 
             case REVIEWS_CALL:
 
-                if (data == null) {
+                if (data == null || !(((Response<ReviewsResponse>) data).isSuccessful())) {
                     Log.e(LOG_TAG, "-> onLoadFinished -> onFailure for REVIEWS_CALL");
                 } else {
                     @SuppressWarnings("unchecked")
                     Response<ReviewsResponse> response = (Response<ReviewsResponse>) data;
                     Log.v(LOG_TAG, "-> onLoadFinished -> Response<ReviewsResponse> -> " + response.code());
+                    reviewsResponse = response.body();
                 }
                 break;
 
@@ -161,5 +192,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(Loader loader) {
         Log.v(LOG_TAG, "-> onLoaderReset");
+    }
+
+    @Override
+    public void onItemClickTrailer(View itemView, int position) {
+        VideosResult videosResult = videosResponse.getVideosResults().get(position);
+        Log.v(LOG_TAG, "-> onItemClickTrailer -> trailer -> " + videosResult.getName());
     }
 }

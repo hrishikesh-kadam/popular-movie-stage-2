@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="false"
     tools:context="com.example.android.popularmoviesstage2.DetailsActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/textViewTitle"
@@ -69,6 +71,63 @@
             android:layout_margin="16dp"
             android:textSize="18sp"
             tools:text="Minions Stuart, Kevin and Bob are recruited by Scarlet Overkill, a super-villain who, alongside her inventor husband Herb, hatches a plot to take over the world." />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewOverview"
+            android:padding="16dp">
+
+            <View
+                android:id="@+id/viewTrailerDivider"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="#BBB" />
+
+            <TextView
+                android:id="@+id/textViewTrailerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/textview_trailer_label"
+                android:textSize="22sp"
+                app:layout_constraintLeft_toLeftOf="@+id/viewTrailerDivider"
+                app:layout_constraintTop_toBottomOf="@+id/viewTrailerDivider" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewTrailer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="@+id/viewTrailerDivider"
+                app:layout_constraintTop_toBottomOf="@+id/textViewTrailerLabel" />
+
+            <View
+                android:id="@+id/viewReviewsDivider"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="16dp"
+                android:background="#BBB"
+                app:layout_constraintLeft_toLeftOf="@+id/viewTrailerDivider"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerViewTrailer" />
+
+            <TextView
+                android:id="@+id/textViewReviewsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/textview_reviews_label"
+                android:textSize="22sp"
+                app:layout_constraintLeft_toLeftOf="@+id/viewTrailerDivider"
+                app:layout_constraintTop_toBottomOf="@+id/viewReviewsDivider" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerViewReviews"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="@+id/viewTrailerDivider"
+                app:layout_constraintTop_toBottomOf="@+id/textViewReviewsLabel" />
+
+        </android.support.constraint.ConstraintLayout>
 
     </RelativeLayout>
 

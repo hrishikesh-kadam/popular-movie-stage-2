@@ -7,7 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class VideosResponse implements Parcelable {
 
@@ -29,9 +28,9 @@ public class VideosResponse implements Parcelable {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("videosResults")
+    @SerializedName("results")
     @Expose
-    private List<VideosResult> videosResults = new ArrayList<>();
+    private ArrayList<VideosResult> videosResults = new ArrayList<>();
 
     protected VideosResponse(Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -49,11 +48,11 @@ public class VideosResponse implements Parcelable {
         this.id = id;
     }
 
-    public List<VideosResult> getVideosResults() {
+    public ArrayList<VideosResult> getVideosResults() {
         return videosResults;
     }
 
-    public void setVideosResults(List<VideosResult> videosResults) {
+    public void setVideosResults(ArrayList<VideosResult> videosResults) {
         this.videosResults = videosResults;
     }
 

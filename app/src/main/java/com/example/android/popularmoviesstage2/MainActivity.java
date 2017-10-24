@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
     @Override
     public void onItemClick(View imageView, int position) {
-        Log.v(LOG_TAG, "-> onItemClick -> " + results.get(position).getOriginalTitle());
+        Log.v(LOG_TAG, "-> onItemClickTrailer -> " + results.get(position).getOriginalTitle());
 
         Intent intent = new Intent(this, DetailsActivity.class);
         intent.putExtra("movieDetails", results.get(position));

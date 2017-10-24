@@ -20,4 +20,9 @@
 
     <string name="textview_ratings">/10</string>
 
+    <string name="textview_trailer_label">Trailers:</string>
+    <string name="textview_reviews_label">Reviews:</string>
+    <string name="empty_view_trailers">Couldn\'t load Trailers</string>
+    <string name="empty_view_reviews">Couldn\'t load Reviews</string>
+
 </resources>

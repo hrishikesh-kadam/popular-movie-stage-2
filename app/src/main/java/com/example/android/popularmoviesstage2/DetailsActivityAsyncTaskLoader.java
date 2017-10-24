@@ -13,7 +13,7 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static com.example.android.popularmoviesstage2.DetailsActivity.VIDEO_CALL;
+import static com.example.android.popularmoviesstage2.DetailsActivity.VIDEOS_CALL;
 
 /**
  * Created by Hrishikesh Kadam on 24/10/2017
@@ -41,7 +41,7 @@ public class DetailsActivityAsyncTaskLoader extends AsyncTaskLoader {
     @Override
     public Object loadInBackground() {
 
-        if (CALL_TYPE == VIDEO_CALL) {
+        if (CALL_TYPE == VIDEOS_CALL) {
 
             Call<VideosResponse> videosResponseCall = tmdbAPIV3.getMovieVideos(id, TmdbApiKey.api_key);
             Response<VideosResponse> response = null;
