@@ -25,4 +25,6 @@
     <string name="empty_view_trailers">Couldn\'t load Trailers</string>
     <string name="empty_view_reviews">Couldn\'t load Reviews</string>
 
+    <string name="share_link">Share link via</string>
+
 </resources>

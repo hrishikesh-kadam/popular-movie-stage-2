@@ -223,6 +223,24 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         watchYoutubeVideo(videosResult.getKey());
     }
 
+    @Override
+    public void onClickShareTrailer(View itemView, int position) {
+        VideosResult videosResult = videosResponse.getVideosResults().get(position);
+        Log.v(LOG_TAG, "-> onClickShareTrailer -> trailer -> " + videosResult.getName());
+        String subject = movieDetails.getTitle();
+        String text = videosResult.getName() + " - " +
+                Uri.parse("https://www.youtube.com/watch?v=" + videosResult.getKey());
+        shareUrl(subject, text);
+    }
+
+    private void shareUrl(String subject, String text) {
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, subject + "\n" + text);
+
+        startActivity(Intent.createChooser(intent, getString(R.string.share_link)));
+    }
+
     public void watchYoutubeVideo(String id) {
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,

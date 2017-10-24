@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -123,6 +124,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ViewHo
 
     public interface ItemClickListener {
         void onItemClickTrailer(View itemView, int position);
+        void onClickShareTrailer(View itemView, int position);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -137,6 +139,9 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ViewHo
         @BindView(R.id.textViewTrailer)
         public TextView textViewTrailer;
 
+        @BindView(R.id.imageViewShare)
+        public ImageView imageViewShare;
+
         public NormalViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -146,6 +151,14 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.ViewHo
                 public void onClick(View view) {
                     if (itemClickListener != null)
                         itemClickListener.onItemClickTrailer(view, getAdapterPosition());
+                }
+            });
+
+            imageViewShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (itemClickListener != null)
+                        itemClickListener.onClickShareTrailer(view, getAdapterPosition());
                 }
             });
         }
