@@ -107,19 +107,20 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.d(LOG_TAG, "-> onTouch -> ratingBar");
 
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    ratingAtActionDown = (int)ratingBar.getRating();
-                    return false;
-                }
-
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                    ratingAtActionDown = (int) ratingBar.getRating();
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP)
                     ratingBar.setRating(ratingAtActionDown == 0 ? 1 : 0);
-                    return true;
-                }
 
-                return false;
+                return true;
+            }
+        });
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                Log.v(LOG_TAG, "-> onRatingChanged -> " + rating);
             }
         });
     }
