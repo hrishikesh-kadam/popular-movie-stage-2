@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name="com.example.android.popularmoviesstage2.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,8 +21,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name="com.example.android.popularmoviesstage2.SettingsActivity" />
-        <activity android:name="com.example.android.popularmoviesstage2.DetailsActivity"></activity>
+
+        <activity android:name="com.example.android.popularmoviesstage2.DetailsActivity"/>
+        
+        <provider
+            android:authorities="com.example.android.popularmoviesstage2"
+            android:name="com.example.android.popularmoviesstage2.data.MovieContentProvider"
+            android:exported="false"/>
+        
     </application>
 
 </manifest>
