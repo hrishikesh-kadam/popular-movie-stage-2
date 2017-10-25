@@ -2,17 +2,22 @@ package com.example.android.popularmoviesstage2;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,6 +60,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     RecyclerView recyclerViewTrailer;
     @BindView(R.id.recyclerViewReviews)
     RecyclerView recyclerViewReviews;
+    @BindView(R.id.ratingBar)
+    RatingBar ratingBar;
 
     private Result movieDetails;
     private TmdbAPIV3 tmdbAPIV3;
@@ -72,6 +79,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        initRatingBar();
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imageViewPoster.getLayoutParams();
         layoutParams.width = MainApplication.imageViewPosterWidth;
         layoutParams.height = MainApplication.imageViewPosterHeight;
@@ -82,6 +91,37 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
         getMovieVideos();
         getMovieReviews();
+    }
+
+    private void initRatingBar() {
+        Log.v(LOG_TAG, "-> initRatingBar");
+
+        LayerDrawable layerDrawable = (LayerDrawable) ratingBar.getProgressDrawable();
+        DrawableCompat.setTint(DrawableCompat.wrap(layerDrawable.getDrawable(0)), ContextCompat.getColor(this, R.color.ratingBarBackground));   // Empty star
+        DrawableCompat.setTint(DrawableCompat.wrap(layerDrawable.getDrawable(1)), ContextCompat.getColor(this, R.color.ratingBarProgress)); // Partial star
+        DrawableCompat.setTint(DrawableCompat.wrap(layerDrawable.getDrawable(2)), ContextCompat.getColor(this, R.color.ratingBarProgress));
+
+        ratingBar.setOnTouchListener(new View.OnTouchListener() {
+
+            int ratingAtActionDown;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d(LOG_TAG, "-> onTouch -> ratingBar");
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    ratingAtActionDown = (int)ratingBar.getRating();
+                    return false;
+                }
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                    ratingBar.setRating(ratingAtActionDown == 0 ? 1 : 0);
+                    return true;
+                }
+
+                return false;
+            }
+        });
     }
 
     private void getMovieVideos() {
