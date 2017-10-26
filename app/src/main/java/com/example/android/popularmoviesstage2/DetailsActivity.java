@@ -79,8 +79,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     private TrailersAdapter trailersAdapter;
     private ReviewsAdapter reviewsAdapter;
     private int ratingAtActionDown;
-    private boolean isVideoCallInProgress;
-    private boolean isReviewCallInProgress;
+    private boolean isVideosCallInProgress;
+    private boolean isReviewsCallInProgress;
     private Gson gson = new Gson();
 
     @Override
@@ -141,7 +141,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.LOADING_VIEW);
         recyclerViewTrailer.setAdapter(trailersAdapter);
 
-        isVideoCallInProgress = true;
+        isVideosCallInProgress = true;
         getSupportLoaderManager().initLoader(VIDEOS_CALL, null, this);
     }
 
@@ -152,7 +152,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         reviewsAdapter = new ReviewsAdapter(this, null, ReviewsAdapter.LOADING_VIEW);
         recyclerViewReviews.setAdapter(reviewsAdapter);
 
-        isReviewCallInProgress = true;
+        isReviewsCallInProgress = true;
         getSupportLoaderManager().initLoader(REVIEWS_CALL, null, this);
     }
 
@@ -282,7 +282,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                             null, null);
                 }
 
-                isVideoCallInProgress = false;
+                isVideosCallInProgress = false;
                 break;
 
             case REVIEWS_CALL:
@@ -344,7 +344,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                             null, null);
                 }
 
-                isReviewCallInProgress = false;
+                isReviewsCallInProgress = false;
                 break;
 
             default:
@@ -443,12 +443,12 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 contentValues.put(FavoriteMovieEntry._ID, movieResult.getId());
                 contentValues.put(FavoriteMovieEntry.COLUMN_MOVIE_RESULT, gson.toJson(movieResult));
 
-                if (!isVideoCallInProgress)
+                if (!isVideosCallInProgress)
                     contentValues.put(FavoriteMovieEntry.COLUMN_VIDEOS_RESPONSE, gson.toJson(videosResponse));
                 else
                     Log.d(LOG_TAG, "-> insertOrUpdate -> INSERT_ACTION -> VIDEOS_CALL is in progress so skipping insert");
 
-                if (!isReviewCallInProgress)
+                if (!isReviewsCallInProgress)
                     contentValues.put(FavoriteMovieEntry.COLUMN_REVIEWS_RESPONSE, gson.toJson(reviewsResponse));
                 else
                     Log.d(LOG_TAG, "-> insertOrUpdate -> INSERT_ACTION -> REVIEWS_CALL is in progress so skipping insert");

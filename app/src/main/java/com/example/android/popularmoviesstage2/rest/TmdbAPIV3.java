@@ -1,7 +1,7 @@
 package com.example.android.popularmoviesstage2.rest;
 
-import com.example.android.popularmoviesstage2.model.details.MovieDetailsResponse;
 import com.example.android.popularmoviesstage2.model.MoviesResponse;
+import com.example.android.popularmoviesstage2.model.Result;
 import com.example.android.popularmoviesstage2.model.reviews.ReviewsResponse;
 import com.example.android.popularmoviesstage2.model.video.VideosResponse;
 
@@ -23,7 +23,7 @@ public interface TmdbAPIV3 {
     Call<MoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}")
-    Call<MovieDetailsResponse> getMovieDetails(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
+    Call<Result> getMovieDetails(@Path("movie_id") Integer id, @Query("api_key") String apiKey);
 
     @GET("movie/{movie_id}/videos")
     Call<VideosResponse> getMovieVideos(@Path("movie_id") Integer id, @Query("api_key") String apiKey);

@@ -13,6 +13,7 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+import static com.example.android.popularmoviesstage2.DetailsActivity.REVIEWS_CALL;
 import static com.example.android.popularmoviesstage2.DetailsActivity.VIDEOS_CALL;
 
 /**
@@ -54,7 +55,7 @@ public class DetailsActivityAsyncTaskLoader extends AsyncTaskLoader {
 
             return response;
 
-        } else {
+        } else if (CALL_TYPE == REVIEWS_CALL){
 
             Call<ReviewsResponse> reviewsResponseCall = tmdbAPIV3.getMovieReviews(id, TmdbApiKey.api_key);
             Response<ReviewsResponse> response = null;
@@ -67,5 +68,7 @@ public class DetailsActivityAsyncTaskLoader extends AsyncTaskLoader {
 
             return response;
         }
+
+        return null;
     }
 }
