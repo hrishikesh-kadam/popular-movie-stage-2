@@ -249,6 +249,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                             tempVideosResults = videosResponse.getVideosResults();
 
                         trailersAdapter = new TrailersAdapter(this, tempVideosResults, TrailersAdapter.NORMAL_VIEW);
+
+                        trailersAdapter.setClickListener(this);
                         recyclerViewTrailer.setAdapter(trailersAdapter);
 
                     } else {
