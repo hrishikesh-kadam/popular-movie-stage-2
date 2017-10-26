@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.example.android.popularmoviesstage2.data.MovieContract.FavoriteMovieEntry;
 import com.example.android.popularmoviesstage2.model.MoviesResponse;
 import com.example.android.popularmoviesstage2.model.Result;
 import com.example.android.popularmoviesstage2.rest.TmdbAPIV3;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         Log.v(LOG_TAG, "-> onItemClick -> " + results.get(position).getOriginalTitle());
 
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("movieDetails", results.get(position));
+        intent.putExtra("movieResult", results.get(position));
         startActivity(intent);
     }
 
@@ -131,9 +132,17 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.v(LOG_TAG, "-> onOptionsItemSelected -> " + item.getTitle());
 
-        if (item.getItemId() == R.id.settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
-            return true;
+        switch (item.getItemId()) {
+
+            case R.id.settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            case R.id.deleteAll:
+                getContentResolver().delete(
+                        FavoriteMovieEntry.CONTENT_URI,
+                        null, null);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

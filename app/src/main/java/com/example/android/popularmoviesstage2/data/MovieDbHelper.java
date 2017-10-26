@@ -25,8 +25,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
         final String CREATE_TABLE = "CREATE TABLE " + FavoriteMovieEntry.TABLE_NAME + " (" +
                 FavoriteMovieEntry._ID + " INTEGER PRIMARY KEY, " +
                 FavoriteMovieEntry.COLUMN_MOVIE_RESULT + " TEXT, " +
-                FavoriteMovieEntry.COLUMN_VIDEOS_RESULT + " TEXT, " +
-                FavoriteMovieEntry.COLUMN_REVIEWS_RESULT + " TEXT);";
+                FavoriteMovieEntry.COLUMN_VIDEOS_RESPONSE + " TEXT, " +
+                FavoriteMovieEntry.COLUMN_REVIEWS_RESPONSE + " TEXT);";
 
         sqLiteDatabase.execSQL(CREATE_TABLE);
 

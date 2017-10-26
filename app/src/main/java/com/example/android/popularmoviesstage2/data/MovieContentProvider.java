@@ -143,6 +143,24 @@ public class MovieContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        throw new UnsupportedOperationException("Update not yet implemented");
+
+        int noOfRowsUpdated;
+        final SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+
+        switch (uriMatcher.match(uri)) {
+
+            case FAVORITE_MOVIE_WITH_ID:
+                noOfRowsUpdated = db.update(FavoriteMovieEntry.TABLE_NAME,
+                        values,
+                        FavoriteMovieEntry._ID + "=?",
+                        new String[]{uri.getLastPathSegment()});
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri + " in update method");
+        }
+
+        return noOfRowsUpdated;
+
     }
 }
