@@ -3,6 +3,7 @@ package com.example.android.popularmoviesstage2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.example.android.popularmoviesstage2.rest.TmdbRetrofit;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,7 @@ import butterknife.ButterKnife;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements GridAdapter.ItemClickListener,
+        CursorGridAdapter.ItemClickListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks {
 
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     private boolean isKeyEntered, isRefreshFromUser;
     private ArrayList<Result> results;
     private int CURRENT_CALL_TYPE;
+    private Cursor cursor;
 
     public static String getCallTypeString(int CALL_TYPE) {
         if (CALL_TYPE == POPULAR_CALL)
@@ -129,10 +133,24 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
     @Override
     public void onItemClick(View imageView, int position) {
-        Log.v(LOG_TAG, "-> onItemClick -> " + results.get(position).getOriginalTitle());
+
+        Result itemResult;
+
+        if (CURRENT_CALL_TYPE == FAVORITE_CALL) {
+
+            cursor.moveToPosition(position);
+            String tempResult = cursor.getString(
+                    cursor.getColumnIndex(FavoriteMovieEntry.COLUMN_MOVIE_RESULT_STRING));
+            Gson gson = new Gson();
+            itemResult = gson.fromJson(tempResult, Result.class);
+
+        } else
+            itemResult = results.get(position);
+
+        Log.v(LOG_TAG, "-> onItemClick -> " + itemResult.getOriginalTitle());
 
         Intent intent = new Intent(this, DetailsActivity.class);
-        intent.putExtra("movieResult", results.get(position));
+        intent.putExtra("movieResult", itemResult);
         startActivity(intent);
     }
 
@@ -196,9 +214,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
         if (networkInfo == null || !networkInfo.isConnected()) {
             Log.w(LOG_TAG, "-> checkNetwork -> not connected");
+            if (CALL_TYPE != FAVORITE_CALL) alertDialogNetwork.show();
 
-            alertDialogNetwork.show();
-        }
+        } else
+            Log.v(LOG_TAG, "-> checkNetwork -> is connected");
 
         if (getSupportLoaderManager().getLoader(CALL_TYPE) == null) {
 
@@ -337,13 +356,31 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                     recyclerView.setAdapter(gridAdapter);
                 }
 
-                swipeRefreshLayout.setRefreshing(false);
                 break;
 
             case FAVORITE_CALL:
+
+                if (data == null || ((Cursor) data).getCount() == 0) {
+                    Log.e(LOG_TAG, "-> onLoadFinished -> " + getCallTypeString(id) + " -> No favorite movies found");
+
+                    CursorGridAdapter cursorGridAdapter = new CursorGridAdapter(
+                            this, (Cursor) data, getString(R.string.no_favorite_movie_found));
+                    recyclerView.setAdapter(cursorGridAdapter);
+
+                } else {
+                    Log.v(LOG_TAG, "-> onLoadFinished -> " + getCallTypeString(id) + " -> favorite movies found");
+
+                    cursor = (Cursor) data;
+                    CursorGridAdapter cursorGridAdapter = new CursorGridAdapter(
+                            this, cursor);
+                    cursorGridAdapter.setClickListener(this);
+                    recyclerView.setAdapter(cursorGridAdapter);
+                }
+
                 break;
         }
 
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
