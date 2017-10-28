@@ -195,14 +195,21 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
             String sortPreference = sharedPreferences.getString(key, getString(R.string.settings_sort_default_value));
             Log.v(LOG_TAG, "-> onSharedPreferenceChanged -> " + sortPreference);
 
-            if (sortPreference.equals(getString(R.string.settings_sort_popular_value)))
+            if (sortPreference.equals(getString(R.string.settings_sort_popular_value))) {
+
+                getSupportActionBar().setTitle(R.string.settings_sort_popular_entry);
                 checkNetwork(POPULAR_CALL);
 
-            else if (sortPreference.equals(getString(R.string.settings_sort_top_rated_value)))
+            } else if (sortPreference.equals(getString(R.string.settings_sort_top_rated_value))) {
+
+                getSupportActionBar().setTitle(R.string.settings_sort_top_rated_entry);
                 checkNetwork(TOP_RATED_CALL);
 
-            else if (sortPreference.equals(getString(R.string.settings_sort_favorite_value)))
+            } else if (sortPreference.equals(getString(R.string.settings_sort_favorite_value))) {
+
+                getSupportActionBar().setTitle(R.string.settings_sort_favorite_entry);
                 checkNetwork(FAVORITE_CALL);
+            }
         }
     }
 
@@ -258,9 +265,9 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
             return;
 
         outState.putBoolean("isAlertDialogNetworkShowing", alertDialogNetwork.isShowing());
-
         outState.putInt("CURRENT_CALL_TYPE", CURRENT_CALL_TYPE);
         outState.putBoolean("isRefreshing", swipeRefreshLayout.isRefreshing());
+        outState.putCharSequence("title", getSupportActionBar().getTitle());
     }
 
     @Override
@@ -271,6 +278,8 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
         isKeyEntered = savedInstanceState.getBoolean("isKeyEntered");
         if (!isKeyEntered)
             return;
+
+        getSupportActionBar().setTitle(savedInstanceState.getCharSequence("title"));
 
         if (savedInstanceState.getBoolean("isRefreshing"))
             swipeRefreshLayout.setRefreshing(true);
