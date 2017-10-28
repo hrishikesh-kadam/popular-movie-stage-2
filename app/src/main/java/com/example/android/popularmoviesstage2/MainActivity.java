@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.data.MovieContract.FavoriteMovieEntry;
 import com.example.android.popularmoviesstage2.model.MoviesResponse;
@@ -170,13 +171,18 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                 return true;
 
             case R.id.deleteAll:
+
                 getContentResolver().delete(
                         FavoriteMovieEntry.CONTENT_URI,
                         null, null);
 
-                CursorGridAdapter cursorGridAdapter = new CursorGridAdapter(
-                        this, null, getString(R.string.no_favorite_movie_found));
-                recyclerView.setAdapter(cursorGridAdapter);
+                if (CURRENT_CALL_TYPE == FAVORITE_CALL) {
+                    CursorGridAdapter cursorGridAdapter = new CursorGridAdapter(
+                            this, null, getString(R.string.no_favorite_movie_found));
+                    recyclerView.setAdapter(cursorGridAdapter);
+                }
+
+                Toast.makeText(this, R.string.deleted_all_favorite, Toast.LENGTH_SHORT).show();
 
                 return true;
         }

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesstage2.data.MovieContract.FavoriteMovieEntry;
 import com.example.android.popularmoviesstage2.model.Result;
@@ -431,6 +432,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                     null
             );
             Log.v(LOG_TAG, "-> onRatingChanged -> No of rows deleted = " + noOfRowsDeleted);
+            Toast.makeText(this, R.string.deleted_from_favorite, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -457,6 +459,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
                 Uri uri = getContentResolver().insert(FavoriteMovieEntry.CONTENT_URI, contentValues);
                 Log.v(LOG_TAG, "-> insertOrUpdate -> INSERT_ACTION -> row inserted at " + uri);
+                Toast.makeText(this, R.string.added_to_favorite, Toast.LENGTH_SHORT).show();
 
                 break;
 

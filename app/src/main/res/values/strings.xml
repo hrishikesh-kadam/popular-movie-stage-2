@@ -33,4 +33,8 @@
 
     <string name="share_link">Share link via</string>
 
+    <string name="added_to_favorite">Added to favorite</string>
+    <string name="deleted_from_favorite">Deleted from favorite</string>
+    <string name="deleted_all_favorite">All favorite movies deleted</string>
+
 </resources>
