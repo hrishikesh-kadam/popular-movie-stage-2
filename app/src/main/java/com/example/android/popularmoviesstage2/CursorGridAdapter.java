@@ -92,7 +92,7 @@ public class CursorGridAdapter extends RecyclerView.Adapter<CursorGridAdapter.Vi
     @Override
     public int getItemViewType(int position) {
 
-        if (cursor.getCount() == 0)
+        if (cursor == null || cursor.getCount() == 0)
             return EMPTY_VIEW;
         else
             return NORMAL_VIEW;
@@ -101,7 +101,7 @@ public class CursorGridAdapter extends RecyclerView.Adapter<CursorGridAdapter.Vi
     @Override
     public int getItemCount() {
 
-        if (cursor.getCount() == 0)
+        if (cursor == null || cursor.getCount() == 0)
             return 1;
         else
             return cursor.getCount();

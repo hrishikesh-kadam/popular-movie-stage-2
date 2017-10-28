@@ -83,7 +83,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
 
-        if (results.size() == 0)
+        if (results == null || results.size() == 0)
             return EMPTY_VIEW;
         else
             return NORMAL_VIEW;
@@ -92,7 +92,7 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
 
-        if (results.size() == 0)
+        if (results == null || results.size() == 0)
             return 1;
         else
             return results.size();

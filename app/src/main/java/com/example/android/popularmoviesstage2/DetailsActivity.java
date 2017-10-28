@@ -255,7 +255,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
                     } else {
 
-                        trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.EMPTY_VIEW);
+                        trailersAdapter = new TrailersAdapter(this, null, TrailersAdapter.FAILURE_VIEW);
                         recyclerViewTrailer.setAdapter(trailersAdapter);
                     }
 
@@ -318,7 +318,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
                     } else {
 
-                        reviewsAdapter = new ReviewsAdapter(this, null, ReviewsAdapter.EMPTY_VIEW);
+                        reviewsAdapter = new ReviewsAdapter(this, null, ReviewsAdapter.FAILURE_VIEW);
                         recyclerViewReviews.setAdapter(reviewsAdapter);
                     }
 

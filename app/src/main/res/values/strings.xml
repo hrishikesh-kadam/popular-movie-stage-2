@@ -26,8 +26,10 @@
 
     <string name="textview_trailer_label">Trailers:</string>
     <string name="textview_reviews_label">Reviews:</string>
-    <string name="empty_view_trailers">Couldn\'t load Trailers</string>
-    <string name="empty_view_reviews">Couldn\'t load Reviews</string>
+    <string name="failure_view_trailers">Couldn\'t load trailers</string>
+    <string name="failure_view_reviews">Couldn\'t load reviews</string>
+    <string name="empty_view_trailers">No trailers yet</string>
+    <string name="empty_view_reviews">No reviews yet</string>
 
     <string name="share_link">Share link via</string>
 

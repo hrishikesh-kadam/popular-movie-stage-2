@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
     RecyclerView recyclerView;
 
     private TmdbAPIV3 tmdbAPIV3;
-    private GridAdapter gridAdapter;
     private AlertDialog alertDialogNetwork, alertDialogKeyNotFound;
     private SharedPreferences sharedPreferences;
     private boolean isKeyEntered, isRefreshFromUser;
@@ -174,6 +173,11 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                 getContentResolver().delete(
                         FavoriteMovieEntry.CONTENT_URI,
                         null, null);
+
+                CursorGridAdapter cursorGridAdapter = new CursorGridAdapter(
+                        this, null, getString(R.string.no_favorite_movie_found));
+                recyclerView.setAdapter(cursorGridAdapter);
+
                 return true;
         }
 
@@ -228,8 +232,10 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
 
         if (isRefreshFromUser)
             getSupportLoaderManager().restartLoader(CALL_TYPE, null, this);
-        else
+        else {
+            recyclerView.setAdapter(null);
             getSupportLoaderManager().initLoader(CALL_TYPE, null, this);
+        }
 
         isRefreshFromUser = false;
     }
@@ -326,6 +332,8 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
             case POPULAR_CALL:
             case TOP_RATED_CALL:
 
+                GridAdapter gridAdapter;
+
                 if (data == null || !(((Response<MoviesResponse>) data).isSuccessful())) {
 
                     if (data != null) {
@@ -336,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                         Log.e(LOG_TAG, "-> onLoadFinished -> " + getCallTypeString(id) + " onFailure");
                     }
 
-                    gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.please_try_again));
+                    gridAdapter = new GridAdapter(this, null, getString(R.string.please_try_again));
                     recyclerView.setAdapter(gridAdapter);
 
                 } else {
@@ -346,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements GridAdapter.ItemC
                     Log.v(LOG_TAG, "-> onLoadFinished -> " + getCallTypeString(id) + " -> " + response.code());
 
                     if (response.body().getResults().size() == 0)
-                        gridAdapter = new GridAdapter(this, new ArrayList<Result>(), getString(R.string.no_movies_found));
+                        gridAdapter = new GridAdapter(this, null, getString(R.string.no_movies_found));
                     else {
                         results = response.body().getResults();
                         gridAdapter = new GridAdapter(this, results);
